@@ -120,6 +120,8 @@ const startServer = async () => {
   app.use('/api/memories', routes.memories);
   app.use('/api/tags', routes.tags);
   app.use('/api/mcp', routes.mcp);
+  app.use('/api/teams', routes.teams);
+  app.use('/api/projects', routes.projects);
 
   app.use((req, res) => {
     res.set({

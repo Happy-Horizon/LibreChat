@@ -11,6 +11,9 @@ import { createAssistantModel } from './assistant';
 import { createFileModel } from './file';
 import { createBannerModel } from './banner';
 import { createProjectModel } from './project';
+import { createTeamModel } from './team';
+import { createTeamMembershipModel } from './teamMembership';
+import { createTeamInvitationModel } from './teamInvitation';
 import { createKeyModel } from './key';
 import { createPluginAuthModel } from './pluginAuth';
 import { createTransactionModel } from './transaction';
@@ -40,6 +43,9 @@ export function createModels(mongoose: typeof import('mongoose')) {
     File: createFileModel(mongoose),
     Banner: createBannerModel(mongoose),
     Project: createProjectModel(mongoose),
+    Team: createTeamModel(mongoose),
+    TeamMembership: createTeamMembershipModel(mongoose),
+    TeamInvitation: createTeamInvitationModel(mongoose),
     Key: createKeyModel(mongoose),
     PluginAuth: createPluginAuthModel(mongoose),
     Transaction: createTransactionModel(mongoose),

@@ -26,6 +26,8 @@ const edit = require('./edit');
 const keys = require('./keys');
 const user = require('./user');
 const mcp = require('./mcp');
+const teams = require('./teams');
+const projects = require('./projects');
 
 module.exports = {
   edit,
@@ -56,4 +58,6 @@ module.exports = {
   categories,
   staticRoute,
   mcp,
+  teams,
+  projects,
 };
