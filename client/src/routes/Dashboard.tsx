@@ -5,6 +5,8 @@ import {
   CreatePromptForm,
   EmptyPromptPreview,
 } from '~/components/Prompts';
+import { TeamsPage } from '~/components/Teams';
+import { ProjectsPage } from '~/components/Projects';
 import DashboardRoute from './Layouts/Dashboard';
 
 const dashboardRoutes = {
@@ -73,8 +75,16 @@ const dashboardRoutes = {
       ],
     },
     {
+      path: 'teams',
+      element: <TeamsPage />,
+    },
+    {
+      path: 'projects',
+      element: <ProjectsPage />,
+    },
+    {
       path: '*',
-      element: <Navigate to="/d/files" replace={true} />,
+      element: <Navigate to="/d/prompts" replace={true} />,
     },
   ],
 };

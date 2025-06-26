@@ -2,7 +2,7 @@ import { useMemo, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { SystemRoles } from 'librechat-data-provider';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { ArrowLeft, MessageSquareQuote } from 'lucide-react';
+import { ArrowLeft, MessageSquareQuote, Users, Settings } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,6 +19,7 @@ import { useLocalize, useCustomLink, useAuthContext } from '~/hooks';
 import AdvancedSwitch from '~/components/Prompts/AdvancedSwitch';
 // import { RightPanel } from '../../components/Prompts/RightPanel';
 import AdminSettings from '~/components/Prompts/AdminSettings';
+import DashboardNav from '~/components/Nav/DashboardNav';
 import { useDashboardContext } from '~/Providers';
 // import { PromptsEditorMode } from '~/common';
 import store from '~/store';
@@ -51,63 +52,85 @@ export default function DashBreadcrumb() {
 
   const chatLinkHandler = useCustomLink('/c/' + lastConversationId, clickCallback);
   const promptsLinkHandler = useCustomLink('/d/prompts');
+  const teamsLinkHandler = useCustomLink('/d/teams');
+  const projectsLinkHandler = useCustomLink('/d/projects');
 
   const isPromptsPath = useMemo(
     () => promptsPathPattern.test(location.pathname),
     [location.pathname],
   );
 
+  const currentSection = useMemo(() => {
+    if (location.pathname.includes('/d/teams')) return 'teams';
+    if (location.pathname.includes('/d/projects')) return 'projects';
+    if (location.pathname.includes('/d/prompts')) return 'prompts';
+    return 'prompts';
+  }, [location.pathname]);
+
+  const getSectionIcon = (section: string) => {
+    switch (section) {
+      case 'teams':
+        return <Users className="h-4 w-4 dark:text-gray-300" aria-hidden="true" />;
+      case 'projects':
+        return <Settings className="h-4 w-4 dark:text-gray-300" aria-hidden="true" />;
+      case 'prompts':
+      default:
+        return <MessageSquareQuote className="h-4 w-4 dark:text-gray-300" aria-hidden="true" />;
+    }
+  };
+
+  const getSectionLabel = (section: string) => {
+    switch (section) {
+      case 'teams':
+        return 'Teams';
+      case 'projects':
+        return 'Projects';
+      case 'prompts':
+      default:
+        return localize('com_ui_prompts');
+    }
+  };
+
+  const getSectionHandler = (section: string) => {
+    switch (section) {
+      case 'teams':
+        return teamsLinkHandler;
+      case 'projects':
+        return projectsLinkHandler;
+      case 'prompts':
+      default:
+        return promptsLinkHandler;
+    }
+  };
+
   return (
-    <div className="mr-2 mt-2 flex h-10 items-center justify-between">
-      <Breadcrumb className="mt-1 px-2 dark:text-gray-200">
-        <BreadcrumbList>
-          <BreadcrumbItem className="hover:dark:text-white">
-            <BreadcrumbLink
-              href="/"
-              className="flex flex-row items-center gap-1"
-              onClick={chatLinkHandler}
-            >
-              <ArrowLeft className="icon-xs" aria-hidden="true" />
-              <span className="hidden md:flex">{localize('com_ui_back_to_chat')}</span>
-              <span className="flex md:hidden">{localize('com_ui_chat')}</span>
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          {/*
-        <BreadcrumbItem className="hover:dark:text-white">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex cursor-default items-center gap-1">
-              <BreadcrumbEllipsis className="h-4 w-4" />
-              <BreadcrumbItem className="hover:dark:text-white">
-                <span className="text-gray-400">{localize('com_ui_dashboard')}</span>
-              </BreadcrumbItem>
-              <span className="sr-only">Toggle menu</span>
-            </DropdownMenuTrigger>
-           <DropdownMenuContent align="start">
-              <DropdownMenuItem>Documentation</DropdownMenuItem>
-              <DropdownMenuItem>Themes</DropdownMenuItem>
-              <DropdownMenuItem>GitHub</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        */}
-          <BreadcrumbItem className="hover:dark:text-white">
-            <BreadcrumbLink
-              href="/d/prompts"
-              className="flex flex-row items-center gap-1"
-              onClick={promptsLinkHandler}
-            >
-              <MessageSquareQuote className="h-4 w-4 dark:text-gray-300" aria-hidden="true" />
-              {localize('com_ui_prompts')}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className="flex items-center justify-center gap-2">
-        {isPromptsPath && <AdvancedSwitch />}
-        {user?.role === SystemRoles.ADMIN && <AdminSettings />}
+    <div className="mr-2 mt-2 flex flex-col">
+      <div className="flex h-10 items-center justify-between">
+        <Breadcrumb className="mt-1 px-2 dark:text-gray-200">
+          <BreadcrumbList>
+            <BreadcrumbItem className="hover:dark:text-white">
+              <BreadcrumbLink
+                href="/"
+                className="flex flex-row items-center gap-1"
+                onClick={chatLinkHandler}
+              >
+                <ArrowLeft className="icon-xs" aria-hidden="true" />
+                <span className="hidden md:flex">{localize('com_ui_back_to_chat')}</span>
+                <span className="flex md:hidden">{localize('com_ui_chat')}</span>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem className="hover:dark:text-white">
+              <span className="text-gray-400">Dashboard</span>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+        <div className="flex items-center justify-center gap-2">
+          {isPromptsPath && <AdvancedSwitch />}
+          {user?.role === SystemRoles.ADMIN && <AdminSettings />}
+        </div>
       </div>
+      <DashboardNav className="mt-2" />
     </div>
   );
 }
